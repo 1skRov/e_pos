@@ -119,13 +119,13 @@
       }
 
       .pay {
-        background: #43a56a;
+        background: #0284c7;
         color: #ffffff;
         flex: 1;
         font-size: 28px;
 
         &:active {
-          background: #51773f;
+          background: #0ea5e9;
         }
       }
     }

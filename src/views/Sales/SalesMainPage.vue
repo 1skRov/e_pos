@@ -1,15 +1,18 @@
 <script>
-import {defineComponent, ref, h} from "vue";
+import {defineComponent, ref, h } from "vue";
 import {
   NDataTable,
   NButton,
   NTag,
   NIcon,
-  NInputNumber
+  NInputNumber,
+  NPopover,
 } from "naive-ui";
 import {AddOutline, RemoveOutline, TrashOutline} from "@vicons/ionicons5";
+import CalcItem from "@/components/InputNumber.vue"
 
 export default defineComponent({
+  components: {CalcItem},
   setup() {
     const data = ref(
       Array.from({length: 10}).map((_, index) => ({
@@ -46,7 +49,7 @@ export default defineComponent({
         render(row) {
           return h(
             "div",
-            {style: {display: "flex", alignItems: "center", gap: "6px"}},
+            { style: { display: "flex", alignItems: "center", gap: "6px" } },
             [
               h(
                 NButton,
@@ -57,17 +60,25 @@ export default defineComponent({
                   onClick: () => updateCount(row, -1)
                 },
                 {
-                  icon: () => h(NIcon, {component: RemoveOutline})
+                  icon: () => h(NIcon, { component: RemoveOutline })
                 }
               ),
-              h(NInputNumber, {
-                value: row.count,
-                "onUpdate:value": (val) => (row.count = val),
-                min: 0,
-                size: "medium",
-                showButton: false,
-                style: "width: 60px"
-              }),
+              h(
+                NPopover,
+                { trigger: "click", placement: "right-start", style: "padding: 0" },
+                {
+                  trigger: () =>
+                    h(NInputNumber, {
+                      value: row.count,
+                      "onUpdate:value": (val) => (row.count = val),
+                      min: 0,
+                      size: "medium",
+                      showButton: false,
+                      style: "width: 60px"
+                    }),
+                  default: () => h(CalcItem)
+                }
+              ),
               h(
                 NButton,
                 {
@@ -77,7 +88,7 @@ export default defineComponent({
                   onClick: () => updateCount(row, 1)
                 },
                 {
-                  icon: () => h(NIcon, {component: AddOutline})
+                  icon: () => h(NIcon, { component: AddOutline })
                 }
               )
             ]
