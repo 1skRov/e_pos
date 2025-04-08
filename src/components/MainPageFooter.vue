@@ -7,7 +7,7 @@
     <div class="sale-information">
       <div class="info-item" style="margin-bottom: 15px;">
         <h1>Итого</h1>
-        <h1 class="value">250000000</h1>
+        <h1 class="value">250000</h1>
       </div>
       <div class="info-item">
         <h2>Получено</h2>

@@ -1,5 +1,5 @@
 <script>
-import {defineComponent, ref, h } from "vue";
+import {defineComponent, ref, h, computed} from "vue";
 import {
   NDataTable,
   NButton,
@@ -23,6 +23,12 @@ export default defineComponent({
         price: (index + 1) * 100
       }))
     );
+    const selectedRowKeys = ref([]);
+    const isDeleted = computed(() => selectedRowKeys.value.length > 0);
+    const deleteSelected = () => {
+      data.value = data.value.filter(row => !selectedRowKeys.value.includes(row.key));
+      selectedRowKeys.value = []; // очистка выбора
+    };
 
     const updateCount = (row, delta) => {
       const target = data.value.find(r => r.key === row.key);
@@ -49,7 +55,7 @@ export default defineComponent({
         render(row) {
           return h(
             "div",
-            { style: { display: "flex", alignItems: "center", gap: "6px" } },
+            {style: {display: "flex", alignItems: "center", gap: "6px"}},
             [
               h(
                 NButton,
@@ -60,12 +66,12 @@ export default defineComponent({
                   onClick: () => updateCount(row, -1)
                 },
                 {
-                  icon: () => h(NIcon, { component: RemoveOutline })
+                  icon: () => h(NIcon, {component: RemoveOutline})
                 }
               ),
               h(
                 NPopover,
-                { trigger: "click", placement: "right-start", style: "padding: 0" },
+                {trigger: "click", placement: "right-start", style: "padding: 0"},
                 {
                   trigger: () =>
                     h(NInputNumber, {
@@ -88,7 +94,7 @@ export default defineComponent({
                   onClick: () => updateCount(row, 1)
                 },
                 {
-                  icon: () => h(NIcon, { component: AddOutline })
+                  icon: () => h(NIcon, {component: AddOutline})
                 }
               )
             ]
@@ -100,9 +106,17 @@ export default defineComponent({
         key: "discount",
         render(row) {
           return h(
-            NTag,
-            {type: "warning", bordered: false, round: true},
-            {default: () => `${row.discount}%`}
+            NPopover,
+            {trigger: "click", placement: "right-start"},
+            {
+              trigger: () =>
+                h(
+                  NTag,
+                  {type: "warning", bordered: false, round: true},
+                  {default: () => `${row.discount}%`}
+                ),
+              default: () => h(CalcItem)
+            }
           );
         }
       },
@@ -110,7 +124,22 @@ export default defineComponent({
         title: "Цена",
         key: "price",
         render(row) {
-          return `${row.price.toFixed(2)} ₸`;
+          return h(
+            NPopover,
+            {trigger: "click", placement: "right-start", style: "padding: 0"},
+            {
+              trigger: () =>
+                h(NInputNumber, {
+                  value: row.price,
+                  "onUpdate:value": (val) => (row.price = val),
+                  min: 0,
+                  size: "medium",
+                  showButton: false,
+                  style: "width: 120px"
+                }),
+              default: () => h(CalcItem)
+            }
+          );
         }
       },
       {
@@ -143,10 +172,15 @@ export default defineComponent({
         }
       }
     ];
+    const tableHeight = computed(() => `${window.innerHeight - 190 - 275}px`);
 
     return {
       data,
       columns,
+      selectedRowKeys,
+      isDeleted,
+      deleteSelected,
+      tableHeight
     };
   }
 });
@@ -154,10 +188,19 @@ export default defineComponent({
 
 <template>
   <div class="sales-table">
+    <div style="display: flex; width: 100%; justify-content: space-between;">
+      <n-input type="text" placeholder="Введите поиск..." :style="{ width: '33%' }"/>
+      <n-button strong secondary type="error" v-if="isDeleted" @click="deleteSelected">
+        Удалить выбранные
+      </n-button>
+    </div>
     <n-data-table
       :columns="columns"
       :data="data"
       :row-key="row => row.key"
+      :style="{ 'font-size': '16px' }"
+      v-model:checked-row-keys="selectedRowKeys"
+      :max-height="tableHeight"
     />
   </div>
 </template>
@@ -165,5 +208,8 @@ export default defineComponent({
 <style scoped>
 .sales-table {
   padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 </style>
