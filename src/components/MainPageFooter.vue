@@ -1,5 +1,8 @@
 <script setup>
+import {ref} from 'vue'
+import QuickItemsDrawer from '@/views/Sales/ProductForFastChoice.vue'
 
+const showQuickItems = ref(false)
 </script>
 
 <template>
@@ -22,7 +25,7 @@
       <div class="additional-buttons">
         <button>Изменить товар</button>
         <button>Универсальный продукт</button>
-        <button>Быстрые товары</button>
+        <button @click="showQuickItems = true">Быстрые товары</button>
         <button>отложка</button>
         <button>доп. фукнкции</button>
       </div>
@@ -31,6 +34,11 @@
         <button class="pay">Оплатить</button>
       </div>
     </div>
+    <n-drawer v-model:show="showQuickItems" placement="bottom" height="60%">
+      <n-drawer-content title="Быстрые товары">
+        <QuickItemsDrawer />
+      </n-drawer-content>
+    </n-drawer>
   </div>
 </template>
 
