@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from 'vue'
-import QuickItemsDrawer from '@/views/Sales/ProductForFastChoice.vue'
+import QuickItemsDrawer from "@/views/Sales/ProductForFastChoice.vue"
 
 const showQuickItems = ref(false)
 </script>
