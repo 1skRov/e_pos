@@ -1,11 +1,13 @@
 <script>
 import { defineComponent, ref, h, computed } from 'vue'
-import { NDataTable, NButton, NTag, NIcon, NInputNumber, NPopover } from 'naive-ui'
+import { NButton, NTag, NIcon, NInputNumber, NPopover, NInput, NDataTable } from 'naive-ui'
 import { AddOutline, RemoveOutline, TrashOutline } from '@vicons/ionicons5'
-import CalcItem from '@/components/InputNumber.vue'
+import CalcItem from '@/components/InputNumber.vue'  // обновлённый калькулятор с цифровой панелью
 
 export default defineComponent({
-  components: { CalcItem },
+  components: {
+    CalcItem
+  },
   setup() {
     const data = ref(
       Array.from({ length: 20 }).map((_, index) => ({
@@ -16,8 +18,11 @@ export default defineComponent({
         price: (index + 1) * 100,
       })),
     )
+
     const selectedRowKeys = ref([])
     const isDeleted = computed(() => selectedRowKeys.value.length > 0)
+    console.log("isDeleted", isDeleted);
+
     const deleteSelected = () => {
       data.value = data.value.filter((row) => !selectedRowKeys.value.includes(row.key))
       selectedRowKeys.value = [] // очистка выбора
@@ -72,7 +77,11 @@ export default defineComponent({
                     showButton: false,
                     style: 'width: 60px',
                   }),
-                default: () => h(CalcItem),
+                default: () =>
+                  h(CalcItem, {
+                    modelValue: row.count,
+                    'onUpdate:modelValue': (val) => (row.count = val),
+                  }),
               },
             ),
             h(
@@ -104,7 +113,11 @@ export default defineComponent({
                   { type: 'warning', bordered: false, round: true },
                   { default: () => `${row.discount}%` },
                 ),
-              default: () => h(CalcItem),
+              default: () =>
+                h(CalcItem, {
+                  modelValue: row.discount,
+                  'onUpdate:modelValue': (val) => (row.discount = val),
+                }),
             },
           )
         },
@@ -126,7 +139,11 @@ export default defineComponent({
                   showButton: false,
                   style: 'width: 120px',
                 }),
-              default: () => h(CalcItem),
+              default: () =>
+                h(CalcItem, {
+                  modelValue: row.price,
+                  'onUpdate:modelValue': (val) => (row.price = val),
+                }),
             },
           )
         },
@@ -161,6 +178,7 @@ export default defineComponent({
         },
       },
     ]
+
     const tableHeight = computed(() => `${window.innerHeight - 190 - 275}px`)
 
     return {

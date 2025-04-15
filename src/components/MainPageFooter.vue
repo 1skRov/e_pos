@@ -42,7 +42,7 @@ const showQuickItems = ref(false)
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .main-footer {
   background: #e0f2fe;
   padding: 12px;

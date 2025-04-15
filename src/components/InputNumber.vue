@@ -1,94 +1,183 @@
 <script>
-import {BackspaceSharp} from "@vicons/ionicons5";
-import {defineComponent} from "vue";
+import { defineComponent, ref, watch } from 'vue'
+import { NInput, NIcon } from 'naive-ui'
+import { BackspaceSharp } from '@vicons/ionicons5'
 
 export default defineComponent({
+  name: 'CalcItem',
   components: {
-    BackspaceSharp
+    NInput,
+    NIcon,
+    BackspaceSharp,
   },
-  setup() {
-  }
-});
+  props: {
+    modelValue: {
+      type: [String, Number],
+      default: '',
+    },
+  },
+  emits: ['update:modelValue', 'cancel'],
+  setup(props, { emit }) {
+    const currentValue = ref(props.modelValue.toString())
+    const originalValue = ref(props.modelValue.toString())
+
+    watch(
+      () => props.modelValue,
+      (newVal) => {
+        currentValue.value = newVal.toString()
+        originalValue.value = newVal.toString()
+      },
+    )
+
+    const appendValue = (val) => {
+      currentValue.value += val
+    }
+
+    const backspace = () => {
+      currentValue.value = currentValue.value.slice(0, -1)
+    }
+
+    const cancelChanges = () => {
+      currentValue.value = originalValue.value
+      emit('cancel')
+    }
+
+    const confirmChanges = () => {
+      originalValue.value = currentValue.value
+      emit('update:modelValue', Number(currentValue.value))
+    }
+
+    return {
+      currentValue,
+      appendValue,
+      backspace,
+      cancelChanges,
+      confirmChanges,
+    }
+  },
+})
 </script>
 
 <template>
-  <div class="numbers-panel">
-    <div class="num-btns">
-      <button>7</button>
-      <button>8</button>
-      <button>9</button>
-      <button>4</button>
-      <button>5</button>
-      <button>6</button>
-      <button>1</button>
-      <button>2</button>
-      <button>3</button>
-      <button>0</button>
-      <button>00</button>
-      <button>.</button>
-    </div>
-    <div class="add-btns">
-      <button class="clear">
-        <n-icon size="30" color="">
-          <BackspaceSharp/>
+  <div class="calc-panel">
+    <div class="input-back">
+      <n-input class="calc-input" v-model:value="currentValue" readonly size="large" />
+      <button class="back-button" @click="backspace">
+        <n-icon size="30" color="#0284c7">
+          <BackspaceSharp />
         </n-icon>
       </button>
-      <button class="cancel">Отмена</button>
-      <button class="ok">ОК</button>
+    </div>
+    <div class="numbers-panel">
+      <div class="num-buttons">
+        <button class="number-button" @click="appendValue('7')">7</button>
+        <button class="number-button" @click="appendValue('8')">8</button>
+        <button class="number-button" @click="appendValue('9')">9</button>
+        <button class="number-button" @click="appendValue('4')">4</button>
+        <button class="number-button" @click="appendValue('5')">5</button>
+        <button class="number-button" @click="appendValue('6')">6</button>
+        <button class="number-button" @click="appendValue('1')">1</button>
+        <button class="number-button" @click="appendValue('2')">2</button>
+        <button class="number-button" @click="appendValue('3')">3</button>
+        <button class="number-button" @click="appendValue('0')">0</button>
+        <button class="number-button" @click="appendValue('00')">00</button>
+        <button class="number-button" @click="appendValue('.')">.</button>
+      </div>
+      <div class="additional-buttons">
+        <button class="ok" @click="confirmChanges">ОК</button>
+        <button class="cancel" @click="cancelChanges">Отмена</button>
+      </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-.numbers-panel {
+<style scoped lang="scss">
+.back-button {
+  width: 80px;
+  height: 45px;
+  font-size: 20px;
+  border-radius: 8px;
+  background: #e0f2fe;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.number-button {
+  border: 1px solid #7dd3fc;
+  background: #e0f2fe;
+  border-radius: 8px;
+  font-size: 20px;
+  width: 75px;
+  height: 75px;
+
+  &:active {
+    background: #bae6fd;
+  }
+}
+
+.calc-panel {
   padding: 20px;
   display: flex;
-  max-width: 350px;
+  flex-direction: column;
+  max-width: 400px;
   gap: 8px;
 
-  .num-btns {
+  .input-back {
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
 
-    button {
-      border: 1px solid #7dd3fc;
-      background: #e0f2fe;
-      border-radius: 8px;
+    .calc-input {
+      width: 100%;
       font-size: 20px;
-      width: 60px;
-      height: 60px;
-
-      &:active {
-        background: #bae6fd;
-      }
     }
   }
 
-  .add-btns {
+  .numbers-panel {
     display: flex;
-    flex-direction: column;
     gap: 8px;
 
-    button {
-      width: 100px;
-      height: 60px;
-      font-size: 20px;
-      border-radius: 8px;
-      border: none;
+    .num-buttons {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
-    .cancel {
-      background: #d23050;
-      color: #ffffff;
-      border: none;
-    }
-    .ok {
-      background: #0284c7;
-      color: white;
+    .additional-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      button {
+        width: 100px;
+        height: 100%;
+        font-size: 20px;
+        border-radius: 8px;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .ok {
+        background: #0284c7;
+        color: white;
+        &:active {
+          background: #0b9eea;
+        }
+      }
+
+      .cancel {
+        background: #d23050;
+        color: #ffffff;
+        &:active {
+          background: #f14668;
+        }
+      }
     }
   }
 }
