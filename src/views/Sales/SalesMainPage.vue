@@ -1,37 +1,36 @@
 <script>
-import { defineComponent, ref, h, computed } from 'vue'
-import { NButton, NTag, NIcon, NInputNumber, NPopover, NInput, NDataTable } from 'naive-ui'
-import { AddOutline, RemoveOutline, TrashOutline } from '@vicons/ionicons5'
-import CalcItem from '@/components/InputNumber.vue'  // обновлённый калькулятор с цифровой панелью
+import {defineComponent, ref, h, computed} from 'vue'
+import {NButton, NTag, NIcon, NInputNumber, NPopover, NInput, NDataTable} from 'naive-ui'
+import {AddOutline, RemoveOutline, TrashOutline} from '@vicons/ionicons5'
+import CalcItem from '@/components/InputNumber.vue'
 
 export default defineComponent({
-  components: {
-    CalcItem
-  },
+  components: {CalcItem},
   setup() {
     const data = ref(
-      Array.from({ length: 20 }).map((_, index) => ({
+      Array.from({length: 20}).map((_, index) => ({
         key: index,
         name: `Товар №${index + 1}`,
         count: Math.floor(Math.random() * 10) + 1,
         discount: Number((Math.random() * 10).toFixed(2)),
         price: (index + 1) * 100,
-      })),
+        customTotal: null,
+      }))
     )
 
     const selectedRowKeys = ref([])
     const isDeleted = computed(() => selectedRowKeys.value.length > 0)
-    console.log("isDeleted", isDeleted);
 
     const deleteSelected = () => {
       data.value = data.value.filter((row) => !selectedRowKeys.value.includes(row.key))
-      selectedRowKeys.value = [] // очистка выбора
+      selectedRowKeys.value = []
     }
 
     const updateCount = (row, delta) => {
       const target = data.value.find((r) => r.key === row.key)
       if (target) {
         target.count = Math.max(0, target.count + delta)
+        target.customTotal = null
       }
     }
 
@@ -51,7 +50,7 @@ export default defineComponent({
         title: 'Количество',
         key: 'count',
         render(row) {
-          return h('div', { style: { display: 'flex', alignItems: 'center', gap: '6px' } }, [
+          return h('div', {style: {display: 'flex', alignItems: 'center', gap: '6px'}}, [
             h(
               NButton,
               {
@@ -61,17 +60,20 @@ export default defineComponent({
                 onClick: () => updateCount(row, -1),
               },
               {
-                icon: () => h(NIcon, { component: RemoveOutline }),
+                icon: () => h(NIcon, {component: RemoveOutline}),
               },
             ),
             h(
               NPopover,
-              { trigger: 'click', placement: 'right-start', style: 'padding: 0' },
+              {trigger: 'click', placement: 'right-start', style: 'padding: 0'},
               {
                 trigger: () =>
                   h(NInputNumber, {
                     value: row.count,
-                    'onUpdate:value': (val) => (row.count = val),
+                    'onUpdate:value': (val) => {
+                      row.count = val
+                      row.customTotal = null
+                    },
                     min: 0,
                     size: 'medium',
                     showButton: false,
@@ -80,9 +82,12 @@ export default defineComponent({
                 default: () =>
                   h(CalcItem, {
                     modelValue: row.count,
-                    'onUpdate:modelValue': (val) => (row.count = val),
+                    'onUpdate:modelValue': (val) => {
+                      row.count = val
+                      row.customTotal = null
+                    },
                   }),
-              },
+              }
             ),
             h(
               NButton,
@@ -93,8 +98,8 @@ export default defineComponent({
                 onClick: () => updateCount(row, 1),
               },
               {
-                icon: () => h(NIcon, { component: AddOutline }),
-              },
+                icon: () => h(NIcon, {component: AddOutline}),
+              }
             ),
           ])
         },
@@ -105,20 +110,23 @@ export default defineComponent({
         render(row) {
           return h(
             NPopover,
-            { trigger: 'click', placement: 'right-start' },
+            {trigger: 'click', placement: 'right-start'},
             {
               trigger: () =>
                 h(
                   NTag,
-                  { type: 'warning', bordered: false, round: true },
-                  { default: () => `${row.discount}%` },
+                  {type: 'warning', bordered: false, round: true},
+                  {default: () => `${row.discount}%`}
                 ),
               default: () =>
                 h(CalcItem, {
                   modelValue: row.discount,
-                  'onUpdate:modelValue': (val) => (row.discount = val),
+                  'onUpdate:modelValue': (val) => {
+                    row.discount = val
+                    row.customTotal = null
+                  },
                 }),
-            },
+            }
           )
         },
       },
@@ -126,34 +134,30 @@ export default defineComponent({
         title: 'Цена',
         key: 'price',
         render(row) {
-          return h(
-            NPopover,
-            { trigger: 'click', placement: 'right-start', style: 'padding: 0' },
-            {
-              trigger: () =>
-                h(NInputNumber, {
-                  value: row.price,
-                  'onUpdate:value': (val) => (row.price = val),
-                  min: 0,
-                  size: 'medium',
-                  showButton: false,
-                  style: 'width: 120px',
-                }),
-              default: () =>
-                h(CalcItem, {
-                  modelValue: row.price,
-                  'onUpdate:modelValue': (val) => (row.price = val),
-                }),
-            },
-          )
+          return `${row.price} ₸`
         },
       },
       {
         title: 'Итого',
         key: 'total',
         render(row) {
-          const total = row.price * row.count * (1 - row.discount / 100)
-          return `${total.toFixed(2)} ₸`
+          const calculatedTotal = row.price * row.count * (1 - row.discount / 100)
+          const total = row.customTotal !== null ? row.customTotal : calculatedTotal
+
+          return h(
+            NPopover,
+            {trigger: 'click', placement: 'right-start', style: 'padding: 0'},
+            {
+              trigger: () => h('span', null, `${total.toFixed(2)} ₸`),
+              default: () =>
+                h(CalcItem, {
+                  modelValue: total,
+                  'onUpdate:modelValue': (val) => {
+                    row.customTotal = val
+                  },
+                }),
+            }
+          )
         },
       },
       {
@@ -172,8 +176,8 @@ export default defineComponent({
               onClick: () => deleteRow(row),
             },
             {
-              icon: () => h(NIcon, { component: TrashOutline }),
-            },
+              icon: () => h(NIcon, {component: TrashOutline}),
+            }
           )
         },
       },
@@ -196,7 +200,7 @@ export default defineComponent({
 <template>
   <div class="sales-table">
     <div style="display: flex; width: 100%; justify-content: space-between">
-      <n-input type="text" placeholder="Введите поиск..." :style="{ width: '33%' }" />
+      <n-input type="text" placeholder="Введите поиск..." :style="{ width: '33%' }"/>
       <n-button strong secondary type="error" v-if="isDeleted" @click="deleteSelected">
         Удалить выбранные
       </n-button>
