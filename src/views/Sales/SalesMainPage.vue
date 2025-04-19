@@ -47,6 +47,21 @@ export default defineComponent({
       {
         title: 'Наименование',
         key: 'name',
+        render(row) {
+          if (!popoverState[row.key]) popoverState[row.key] = {}
+          return h(
+            'div',
+            {
+              style: {cursor: 'pointer'},
+              onClick: () => {
+                const idx = selectedRowKeys.value.indexOf(row.key)
+                if (idx >= 0) selectedRowKeys.value.splice(idx, 1)
+                else selectedRowKeys.value.push(row.key)
+              }
+            },
+            row.name
+          )
+        }
       },
       {
         title: 'Количество',
