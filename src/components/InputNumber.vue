@@ -1,7 +1,7 @@
 <script>
 import { defineComponent, ref, watch } from 'vue'
 import { NInput, NIcon } from 'naive-ui'
-import { BackspaceSharp } from '@vicons/ionicons5'
+import {AddOutline, BackspaceSharp, RemoveOutline} from '@vicons/ionicons5'
 
 export default defineComponent({
   name: 'CalcItem',
@@ -9,6 +9,8 @@ export default defineComponent({
     NInput,
     NIcon,
     BackspaceSharp,
+    RemoveOutline,
+    AddOutline,
   },
   props: {
     modelValue: {
@@ -61,12 +63,17 @@ export default defineComponent({
 <template>
   <div class="calc-panel">
     <div class="input-back">
-      <n-input class="calc-input" v-model:value="currentValue" readonly size="large" />
-      <button class="back-button" @click="backspace">
-        <n-icon size="30" color="#0284c7">
-          <BackspaceSharp />
+      <n-button territary circle>
+        <n-icon size="30" color="">
+          <RemoveOutline/>
         </n-icon>
-      </button>
+      </n-button>
+      <n-input class="calc-input" v-model:value="currentValue" readonly size="large" />
+      <n-button territary circle>
+        <n-icon size="30" color="">
+          <AddOutline/>
+        </n-icon>
+      </n-button>
     </div>
     <div class="numbers-panel">
       <div class="num-buttons">
@@ -80,12 +87,17 @@ export default defineComponent({
         <button class="number-button" @click="appendValue('2')">2</button>
         <button class="number-button" @click="appendValue('3')">3</button>
         <button class="number-button" @click="appendValue('0')">0</button>
-        <button class="number-button" @click="appendValue('00')">00</button>
         <button class="number-button" @click="appendValue('.')">.</button>
+        <button class="number-button" @click="backspace">
+          <n-icon size="30" color="#0284c7">
+            <BackspaceSharp />
+          </n-icon>
+        </button>
       </div>
       <div class="additional-buttons">
         <button class="ok" @click="confirmChanges">ОК</button>
         <button class="cancel" @click="cancelChanges">Отмена</button>
+        <button class="CE">CE</button>
       </div>
     </div>
   </div>
@@ -176,6 +188,13 @@ export default defineComponent({
         color: #ffffff;
         &:active {
           background: #f14668;
+        }
+      }
+
+      .CE {
+        background: #f5b106;
+        &:active {
+          background: #f6d322;
         }
       }
     }
