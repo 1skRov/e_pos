@@ -2,6 +2,8 @@
 import {ref} from 'vue'
 import {Trash} from '@vicons/ionicons5'
 
+const emit = defineEmits(['close'])
+
 const quickItems = [
   {id: 1, name: 'Пирожки', price: 2500, image: './src/assets/images/cake.jpg'},
   {id: 2, name: 'Самса', price: 3500, image: './src/assets/images/samsa.jpg'},
@@ -50,6 +52,14 @@ const removeItem = (id) => {
   selected.value.delete(id)
   selectedItems.value = selectedItems.value.filter(i => i.id !== id)
 }
+
+function handleAdd() {
+  emit('close')
+}
+
+function handleCancel() {
+  emit('close')
+}
 </script>
 
 <template>
@@ -95,8 +105,8 @@ const removeItem = (id) => {
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <p style="font-size: 16px;">Добавляемые продукты</p>
           <div style="display: flex; gap: 8px">
-            <button class="add">Добавить</button>
-            <button class="cancel">Отменить</button>
+            <button class="add" @click="handleAdd">Добавить</button>
+            <button class="cancel" @click="handleCancel">Отменить</button>
           </div>
         </div>
         <div class="add-products"
@@ -136,6 +146,10 @@ button {
   width: 130px;
   height: 50px;
   color: #ffffff;
+
+  &:active {
+    background: #20a1e3;
+  }
 }
 
 .cancel {
@@ -143,6 +157,10 @@ button {
   width: 130px;
   height: 50px;
   color: #ffffff;
+
+  &:active {
+    background: #fc5173;
+  }
 }
 
 .product {

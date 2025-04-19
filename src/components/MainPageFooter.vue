@@ -23,8 +23,8 @@ const showQuickItems = ref(false)
     </div>
     <div class="btns">
       <div class="additional-buttons">
-        <button>Изменить товар</button>
-        <button>Универсальный продукт</button>
+        <button>Пример сообщения</button>
+        <button>Закрыть заказ</button>
         <button @click="showQuickItems = true">Быстрые товары</button>
         <button>отложка</button>
         <button>доп. фукнкции</button>
@@ -36,7 +36,7 @@ const showQuickItems = ref(false)
     </div>
     <n-drawer v-model:show="showQuickItems" placement="bottom" height="60%">
       <n-drawer-content title="Быстрые товары">
-        <QuickItemsDrawer />
+        <QuickItemsDrawer @close="showQuickItems = false"/>
       </n-drawer-content>
     </n-drawer>
   </div>
@@ -91,7 +91,7 @@ const showQuickItems = ref(false)
 
     .additional-buttons {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 8px;
 
       button {
