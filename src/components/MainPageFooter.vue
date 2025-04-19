@@ -64,7 +64,6 @@ function handleExampleMessage() {
         <button>доп. функции</button>
       </div>
       <div class="finish-delete">
-        <button class="delete">Удалить выбранные</button>
         <button class="pay">Оплатить</button>
       </div>
     </div>
@@ -150,15 +149,6 @@ function handleExampleMessage() {
       display: flex;
       flex-direction: column;
       gap: 8px;
-
-      .delete {
-        width: 160px;
-        text-align: center;
-        background: #d23050;
-        color: #ffffff;
-        height: 75px;
-        border: 1px solid #ffffff;
-      }
 
       .pay {
         background: #0284c7;
