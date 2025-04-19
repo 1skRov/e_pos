@@ -83,7 +83,7 @@ function handleExampleMessage() {
       </n-drawer-content>
     </n-drawer>
 
-    <n-drawer v-model:show="showPayment" placement="right" width="70%">
+    <n-drawer v-model:show="showPayment" placement="right" width="75%">
       <n-drawer-content title="Оплата">
         <Payment></Payment>
       </n-drawer-content>
