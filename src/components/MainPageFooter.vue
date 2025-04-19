@@ -91,7 +91,7 @@ const showQuickItems = ref(false)
 
     .additional-buttons {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
       gap: 8px;
 
       button {
