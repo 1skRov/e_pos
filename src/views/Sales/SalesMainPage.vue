@@ -188,7 +188,7 @@ export default defineComponent({
         key: 'actions',
         align: 'center',
         render: row => h(NButton, {
-          size: 'large', secondary: true, type: 'error', strong: true, circle: true,
+          size: 'large', secondary: true, type: 'error', strong: true,
           onClick: () => deleteRow(row)
         }, {icon: () => h(NIcon, {component: TrashOutline})})
       },
