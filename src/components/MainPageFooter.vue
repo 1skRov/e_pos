@@ -1,8 +1,42 @@
 <script setup>
-import {ref} from 'vue'
+import {ref, h} from 'vue'
 import QuickItemsDrawer from "@/views/Sales/ProductForFastChoice.vue"
+import {useMessage, NAlert} from 'naive-ui'
 
 const showQuickItems = ref(false)
+const {error} = useMessage()
+
+const renderErrorAlert = (props) => {
+  return h(
+    NAlert,
+    {
+      type: props.type === 'loading' ? 'default' : props.type,
+      title: 'Ошибка обработки',
+      closable: props.closable,
+      onClose: props.onClose,
+      style: {
+        boxShadow: 'var(--n-box-shadow)',
+        maxWidth: 'calc(100vw - 32px)',
+        width: '600px',
+        lineHeight: '1.6',
+        whiteSpace: 'pre-wrap'
+      }
+    },
+    {
+      default: () =>
+        `Произошла непредвиденная ошибка при попытке выполнить операцию.
+Пожалуйста, проверьте введённые данные и попробуйте снова.
+Если проблема сохраняется, обратитесь в техподдержку.`
+    }
+  )
+}
+
+function handleExampleMessage() {
+  error('', {
+    render: renderErrorAlert,
+    closable: true
+  })
+}
 </script>
 
 <template>
@@ -23,11 +57,11 @@ const showQuickItems = ref(false)
     </div>
     <div class="btns">
       <div class="additional-buttons">
-        <button>Пример сообщения</button>
+        <button @click="handleExampleMessage">Пример сообщения</button>
         <button>Закрыть заказ</button>
         <button @click="showQuickItems = true">Быстрые товары</button>
         <button>отложка</button>
-        <button>доп. фукнкции</button>
+        <button>доп. функции</button>
       </div>
       <div class="finish-delete">
         <button class="delete">Удалить выбранные</button>
@@ -79,7 +113,7 @@ const showQuickItems = ref(false)
       }
 
       .value {
-        padding-left: 8px
+        padding-left: 8px;
       }
     }
   }
