@@ -1,25 +1,26 @@
 <script>
-import { defineComponent, ref, watch } from 'vue'
-import { NInput, NIcon } from 'naive-ui'
-import {AddOutline, BackspaceSharp, RemoveOutline} from '@vicons/ionicons5'
+import {defineComponent, ref, watch} from 'vue'
+import {NInput, NButton, NIcon} from 'naive-ui'
+import {BackspaceSharp, RemoveOutline, AddOutline} from '@vicons/ionicons5'
 
 export default defineComponent({
   name: 'CalcItem',
   components: {
     NInput,
+    NButton,
     NIcon,
     BackspaceSharp,
     RemoveOutline,
-    AddOutline,
+    AddOutline
   },
   props: {
     modelValue: {
       type: [String, Number],
-      default: '',
-    },
+      default: ''
+    }
   },
   emits: ['update:modelValue', 'cancel'],
-  setup(props, { emit }) {
+  setup(props, {emit}) {
     const currentValue = ref(props.modelValue.toString())
     const originalValue = ref(props.modelValue.toString())
 
@@ -49,12 +50,27 @@ export default defineComponent({
       emit('update:modelValue', Number(currentValue.value))
     }
 
+    const decrement = () => {
+      const num = Number(currentValue.value) || 0
+      currentValue.value = String(num - 1)
+    }
+    const increment = () => {
+      const num = Number(currentValue.value) || 0
+      currentValue.value = String(num + 1)
+    }
+    const clearEntry = () => {
+      currentValue.value = ''
+    }
+
     return {
       currentValue,
       appendValue,
       backspace,
       cancelChanges,
       confirmChanges,
+      decrement,
+      increment,
+      clearEntry
     }
   },
 })
@@ -63,14 +79,14 @@ export default defineComponent({
 <template>
   <div class="calc-panel">
     <div class="input-back">
-      <n-button territary circle>
-        <n-icon size="30" color="">
+      <n-button tertiary circle @click="decrement">
+        <n-icon size="30">
           <RemoveOutline/>
         </n-icon>
       </n-button>
       <n-input class="calc-input" v-model:value="currentValue" readonly size="large" />
-      <n-button territary circle>
-        <n-icon size="30" color="">
+      <n-button tertiary circle @click="increment">
+        <n-icon size="30">
           <AddOutline/>
         </n-icon>
       </n-button>
@@ -97,7 +113,7 @@ export default defineComponent({
       <div class="additional-buttons">
         <button class="ok" @click="confirmChanges">ОК</button>
         <button class="cancel" @click="cancelChanges">Отмена</button>
-        <button class="CE">CE</button>
+        <button class="CE" @click="clearEntry">CE</button>
       </div>
     </div>
   </div>
@@ -178,6 +194,7 @@ export default defineComponent({
       .ok {
         background: #0284c7;
         color: white;
+
         &:active {
           background: #0b9eea;
         }
@@ -186,6 +203,7 @@ export default defineComponent({
       .cancel {
         background: #d23050;
         color: #ffffff;
+
         &:active {
           background: #f14668;
         }
@@ -193,6 +211,7 @@ export default defineComponent({
 
       .CE {
         background: #f5b106;
+
         &:active {
           background: #f6d322;
         }
