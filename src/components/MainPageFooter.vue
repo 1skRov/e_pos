@@ -2,8 +2,12 @@
 import {ref, h} from 'vue'
 import QuickItemsDrawer from "@/views/Sales/ProductForFastChoice.vue"
 import {useMessage, NAlert} from 'naive-ui'
+import AdditionalFunctions from "@/views/Sales/AdditionalFunctions.vue";
+import Payment from "@/views/Sales/Payment.vue";
 
-const showQuickItems = ref(false)
+const showQuickItems = ref(false);
+const showAdditionalFunctions = ref(false);
+const showPayment = ref(false);
 const {error} = useMessage()
 
 const renderErrorAlert = (props) => {
@@ -61,15 +65,27 @@ function handleExampleMessage() {
         <button>Закрыть заказ</button>
         <button @click="showQuickItems = true">Быстрые товары</button>
         <button>отложка</button>
-        <button>доп. функции</button>
+        <button @click="showAdditionalFunctions = true">доп. функции</button>
       </div>
       <div class="finish-delete">
-        <button class="pay">Оплатить</button>
+        <button class="pay" @click="showPayment = true">Оплатить</button>
       </div>
     </div>
     <n-drawer v-model:show="showQuickItems" placement="bottom" height="60%">
       <n-drawer-content title="Быстрые товары">
         <QuickItemsDrawer @close="showQuickItems = false"/>
+      </n-drawer-content>
+    </n-drawer>
+
+    <n-drawer v-model:show="showAdditionalFunctions" placement="bottom" height="60%">
+      <n-drawer-content title="Дополнительные функции">
+        <AdditionalFunctions></AdditionalFunctions>
+      </n-drawer-content>
+    </n-drawer>
+
+    <n-drawer v-model:show="showPayment" placement="right" width="70%">
+      <n-drawer-content title="Оплата">
+        <Payment></Payment>
       </n-drawer-content>
     </n-drawer>
   </div>
@@ -147,7 +163,6 @@ function handleExampleMessage() {
 
     .finish-delete {
       display: flex;
-      flex-direction: column;
       gap: 8px;
 
       .pay {
@@ -155,6 +170,7 @@ function handleExampleMessage() {
         color: #ffffff;
         flex: 1;
         font-size: 28px;
+        padding: 0 15px;
 
         &:active {
           background: #0ea5e9;
