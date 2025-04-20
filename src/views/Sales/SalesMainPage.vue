@@ -26,7 +26,13 @@
       v-model:checked-row-keys="selectedRowKeys"
       :max-height="tableHeight"
       :style="{ fontSize: '16px' }"
-    />
+    >
+      <template #empty>
+        <div style="padding: 16px; text-align: center; color: #999;">
+          Здесь пока нет товаров
+        </div>
+      </template>
+    </n-data-table>
   </div>
 </template>
 
