@@ -1,6 +1,8 @@
 <template>
   <div class="sales-table">
-    <div style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
+    <div
+      style="display: flex; width: 100%; justify-content: space-between; align-items: center;"
+    >
       <n-select
         v-model:value="selectedProduct"
         :options="productOptions"
@@ -37,7 +39,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, computed, watch, h } from 'vue'
+import {defineComponent, ref, reactive, computed, h} from 'vue'
 import {
   NButton,
   NTag,
@@ -47,7 +49,7 @@ import {
   NDataTable,
   NSelect
 } from 'naive-ui'
-import { AddOutline, RemoveOutline, TrashOutline } from '@vicons/ionicons5'
+import {AddOutline, RemoveOutline, TrashOutline} from '@vicons/ionicons5'
 import CalcItem from '@/components/InputNumber.vue'
 
 export default defineComponent({
@@ -63,7 +65,7 @@ export default defineComponent({
   },
   setup() {
     const allProducts = ref(
-      Array.from({ length: 20 }).map((_, i) => ({
+      Array.from({length: 20}).map((_, i) => ({
         id: i,
         name: `Товар №${i + 1}`,
         price: (i + 1) * 100,
@@ -79,17 +81,23 @@ export default defineComponent({
     )
 
     const selectedProduct = ref(null)
-
-    const nextKey = ref( allProducts.value.length )
-
+    const nextKey = ref(allProducts.value.length)
     const data = ref([])
 
-    const handleSelect = (productId) => {
+    // при выборе товара: добавляем новую строку или увеличиваем count
+    const handleSelect = productId => {
       if (productId === null) return
       const prod = allProducts.value.find(p => p.id === productId)
-      if (prod) {
+      if (!prod) return
+
+      const existing = data.value.find(r => r.id === prod.id)
+      if (existing) {
+        existing.count++
+        existing.customTotal = null
+      } else {
         data.value.push({
           key: nextKey.value++,
+          id: prod.id,
           name: prod.name,
           count: 1,
           discount: prod.discount,
@@ -116,14 +124,14 @@ export default defineComponent({
       }
     }
 
-    const deleteRow = (row) => {
+    const deleteRow = row => {
       data.value = data.value.filter(item => item.key !== row.key)
     }
 
     const popoverState = reactive({})
 
     const columns = [
-      { type: 'selection' },
+      {type: 'selection'},
       {
         title: 'Наименование',
         key: 'name',
@@ -131,7 +139,7 @@ export default defineComponent({
           return h(
             'div',
             {
-              style: { cursor: 'pointer' },
+              style: {cursor: 'pointer'},
               onClick: () => {
                 const i = selectedRowKeys.value.indexOf(row.key)
                 if (i >= 0) selectedRowKeys.value.splice(i, 1)
@@ -147,66 +155,70 @@ export default defineComponent({
         key: 'count',
         render(row) {
           if (!popoverState[row.key]) popoverState[row.key] = {}
-          return h('div', { style: { display: 'flex', alignItems: 'center', gap: '6px' } }, [
-            h(
-              NButton,
-              {
-                size: 'small',
-                tertiary: true,
-                circle: true,
-                onClick: () => updateCount(row, -1)
-              },
-              { icon: () => h(NIcon, { component: RemoveOutline }) }
-            ),
-            h(
-              NPopover,
-              {
-                trigger: 'click',
-                placement: 'right-start',
-                show: popoverState[row.key].count,
-                'onUpdate:show': val => {
-                  popoverState[row.key].count = val
+          return h(
+            'div',
+            {style: {display: 'flex', alignItems: 'center', gap: '6px'}},
+            [
+              h(
+                NButton,
+                {
+                  size: 'small',
+                  tertiary: true,
+                  circle: true,
+                  onClick: () => updateCount(row, -1)
                 },
-                style: 'padding: 0'
-              },
-              {
-                trigger: () =>
-                  h(NInputNumber, {
-                    value: row.count,
-                    'onUpdate:value': val => {
-                      row.count = val
-                      row.customTotal = null
-                    },
-                    min: 0,
-                    size: 'medium',
-                    showButton: false,
-                    style: 'width: 60px'
-                  }),
-                default: () =>
-                  h(CalcItem, {
-                    modelValue: row.count,
-                    'onUpdate:modelValue': val => {
-                      row.count = val
-                      row.customTotal = null
-                      popoverState[row.key].count = false
-                    },
-                    onCancel: () => {
-                      popoverState[row.key].count = false
-                    }
-                  })
-              }
-            ),
-            h(
-              NButton,
-              {
-                size: 'small',
-                tertiary: true,
-                circle: true,
-                onClick: () => updateCount(row, 1)
-              },
-              { icon: () => h(NIcon, { component: AddOutline }) }
-            )
-          ])
+                {icon: () => h(NIcon, {component: RemoveOutline})}
+              ),
+              h(
+                NPopover,
+                {
+                  trigger: 'click',
+                  placement: 'right-start',
+                  show: popoverState[row.key].count,
+                  'onUpdate:show': val => {
+                    popoverState[row.key].count = val
+                  },
+                  style: 'padding: 0'
+                },
+                {
+                  trigger: () =>
+                    h(NInputNumber, {
+                      value: row.count,
+                      'onUpdate:value': val => {
+                        row.count = val
+                        row.customTotal = null
+                      },
+                      min: 0,
+                      size: 'medium',
+                      showButton: false,
+                      style: 'width: 60px'
+                    }),
+                  default: () =>
+                    h(CalcItem, {
+                      modelValue: row.count,
+                      'onUpdate:modelValue': val => {
+                        row.count = val
+                        row.customTotal = null
+                        popoverState[row.key].count = false
+                      },
+                      onCancel: () => {
+                        popoverState[row.key].count = false
+                      }
+                    })
+                }
+              ),
+              h(
+                NButton,
+                {
+                  size: 'small',
+                  tertiary: true,
+                  circle: true,
+                  onClick: () => updateCount(row, 1)
+                },
+                {icon: () => h(NIcon, {component: AddOutline})}
+              )
+            ]
+          )
         }
       },
       {
@@ -228,8 +240,8 @@ export default defineComponent({
               trigger: () =>
                 h(
                   NTag,
-                  { type: 'warning', bordered: false, round: true },
-                  { default: () => `${row.discount}%` }
+                  {type: 'warning', bordered: false, round: true},
+                  {default: () => `${row.discount}%`}
                 ),
               default: () =>
                 h(CalcItem, {
@@ -301,7 +313,7 @@ export default defineComponent({
               strong: true,
               onClick: () => deleteRow(row)
             },
-            { icon: () => h(NIcon, { component: TrashOutline }) }
+            {icon: () => h(NIcon, {component: TrashOutline})}
           )
       }
     ]
@@ -309,7 +321,6 @@ export default defineComponent({
     const tableHeight = computed(() => `${window.innerHeight - 190 - 275}px`)
 
     return {
-      allProducts,
       productOptions,
       selectedProduct,
       data,
