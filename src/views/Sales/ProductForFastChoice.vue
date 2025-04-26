@@ -1,6 +1,8 @@
 <script setup>
 import {ref} from 'vue'
 import {Trash} from '@vicons/ionicons5'
+import PlusIcon from '@/assets/icons/PlusIcon.vue'
+import MinusIcon from '@/assets/icons/MinusIcon.vue'
 
 const emit = defineEmits(['close'])
 
@@ -78,7 +80,7 @@ function handleCancel() {
           :key="item.id"
           @click="toggleItem(item.id)"
           :style="{
-            border: selected.has(item.id) ? '2px solid #0284c7' : '1px solid lightgray',
+            border: selected.has(item.id) ? '2px solid #5db7b9' : '2px solid lightgray',
             cursor: 'pointer',
             display: 'flex',
             flexDirection: 'column',
@@ -86,7 +88,8 @@ function handleCancel() {
             height: '150px',
             borderRadius: '8px',
             overflow: 'hidden',
-            transition: 'border 0.2s ease'
+            transition: 'border 0.2s ease',
+            backgroundColor: selected.has(item.id) ? '#f4f8fb' : '#ffffff',
           }"
         >
           <div style="height: 60%; width: 100%">
@@ -94,7 +97,7 @@ function handleCancel() {
           </div>
           <div style="font-size: 16px; padding: 8px">
             <p style="font-weight: 500;">{{ item.name }}</p>
-            <p>{{ item.price }} ₸</p>
+            <p style="color: #325b6f; font-weight: 600;">{{ item.price }} ₸</p>
           </div>
         </div>
       </div>
@@ -118,11 +121,11 @@ function handleCancel() {
                 <Trash/>
               </n-icon>
             </button>
-            <div class="title" style="width: 100px">{{ item.name }}</div>
+            <div class="title" style="width: 100px; font-weight: 500;">{{ item.name }}</div>
             <div class="count" style="display: flex; align-items: center; gap: 8px">
-              <button @click="decreaseQty(item)" class="plus">-</button>
+              <button @click="decreaseQty(item)" class="plus-rounded"><minus-icon width="20px" height="20px" stroke="#ffffff"></minus-icon></button>
               <span>{{ item.quantity }}</span>
-              <button @click="increaseQty(item)" class="minus">+</button>
+              <button @click="increaseQty(item)" class="minus-rounded"><plus-icon width="20px" height="20px" stroke="#ffffff"></plus-icon></button>
             </div>
           </div>
         </div>
@@ -142,13 +145,14 @@ button {
 }
 
 .add {
-  background: #0284c7;
+  background: #084661;
   width: 130px;
   height: 50px;
   color: #ffffff;
+  font-weight: 500;
 
   &:active {
-    background: #20a1e3;
+    background: #105d7e;
   }
 }
 
@@ -157,6 +161,7 @@ button {
   width: 130px;
   height: 50px;
   color: #ffffff;
+  font-weight: 500;
 
   &:active {
     background: #fc5173;
@@ -182,16 +187,9 @@ button {
   }
 }
 
-.plus, .minus {
-  border-radius: 100%;
-  width: 50px;
-  height: 50px;
-  background: lightgray;
-  font-size: 20px;
-}
-
 .count span {
   min-width: 100px;
   text-align: center;
+  font-weight: 600;
 }
 </style>
