@@ -1,46 +1,12 @@
 <script setup>
-import { ref, h } from 'vue'
+import { ref } from 'vue'
 import QuickItemsDrawer from '@/views/Sales/ProductForFastChoice.vue'
-import { useMessage, NAlert } from 'naive-ui'
 import AdditionalFunctions from '@/views/Sales/AdditionalFunctions.vue'
 import Payment from '@/views/Sales/Payment.vue'
 
 const showQuickItems = ref(false)
 const showAdditionalFunctions = ref(false)
 const showPayment = ref(false)
-const { error } = useMessage()
-
-const renderErrorAlert = (props) => {
-  return h(
-    NAlert,
-    {
-      type: props.type === 'loading' ? 'default' : props.type,
-      title: 'Ошибка обработки',
-      closable: props.closable,
-      onClose: props.onClose,
-      style: {
-        boxShadow: 'var(--n-box-shadow)',
-        maxWidth: 'calc(100vw - 32px)',
-        width: '600px',
-        lineHeight: '1.6',
-        whiteSpace: 'pre-wrap',
-      },
-    },
-    {
-      default: () =>
-        `Произошла непредвиденная ошибка при попытке выполнить операцию.
-Пожалуйста, проверьте введённые данные и попробуйте снова.
-Если проблема сохраняется, обратитесь в техподдержку.`,
-    },
-  )
-}
-
-function handleExampleMessage() {
-  error('', {
-    render: renderErrorAlert,
-    closable: true,
-  })
-}
 </script>
 
 <template>
@@ -136,16 +102,7 @@ function handleExampleMessage() {
   flex-direction: column;
   justify-content: space-between;
 }
-.add-btn {
-  border: 1px solid #2591a3;
-  width: 160px;
-  height: 75px;
-  color: #084661;
-  font-weight: 500;
-  border-radius: 4px;
-  font-size: 24px;
-  cursor: pointer;
-}
+
 .pay-btn {
   border: 1px solid #2591a3;
   background: #2591a3;
