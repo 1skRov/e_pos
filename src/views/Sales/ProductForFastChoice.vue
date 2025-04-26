@@ -116,8 +116,8 @@ function handleCancel() {
         <div style="display: flex; justify-content: space-between; align-items: center">
           <p style="font-size: 16px">Добавляемые продукты</p>
           <div style="display: flex; gap: 8px">
-            <button class="add" @click="handleAdd">Добавить</button>
-            <button class="cancel" @click="handleCancel">Отменить</button>
+            <button class="addCancel add" @click="handleAdd">Добавить</button>
+            <button class="addCancel cancel" @click="handleCancel">Отменить</button>
           </div>
         </div>
         <div
@@ -153,21 +153,19 @@ function handleCancel() {
 </template>
 
 <style scoped lang="scss">
-button {
-  border: none;
-  background: none;
+.addCancel {
+  width: 130px;
+  height: 50px;
+  color: #ffffff;
+  font-weight: 600;
   font-size: 18px;
-  border-radius: 8px;
-  letter-spacing: 1.5px;
-  font-weight: 500;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .add {
   background: #084661;
-  width: 130px;
-  height: 50px;
-  color: #ffffff;
-  font-weight: 500;
 
   &:active {
     background: #105d7e;
@@ -176,10 +174,6 @@ button {
 
 .cancel {
   background: #d23050;
-  width: 130px;
-  height: 50px;
-  color: #ffffff;
-  font-weight: 500;
 
   &:active {
     background: #fc5173;
@@ -202,6 +196,7 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
+    border: none;
   }
 }
 
