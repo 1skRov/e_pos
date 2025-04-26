@@ -1,119 +1,150 @@
-<script>
-import {defineComponent, h, ref} from "vue";
-import {NIcon} from "naive-ui";
-import {BookOutline as BookIcon, Person} from "@vicons/ionicons5";
-import {useRouter} from 'vue-router';
+<script setup>
+import { useRouter, useRoute } from 'vue-router'
 
-function renderIcon(icon) {
-  return () => h(NIcon, null, {default: () => h(icon)});
+import MainIcon from '@/assets/icons/MainIcon.vue'
+import ReportIcon from '@/assets/icons/ReportIcon.vue'
+import UserIcon from '@/assets/icons/UserIcon.vue'
+import LogoutIcon from '@/assets/icons/LogoutIcon.vue'
+import MoonIcon from '@/assets/icons/MoonIcon.vue'
+
+const router = useRouter()
+const route = useRoute()
+const menuItems = [
+  { label: 'Главная', icon: MainIcon, path: '/sales' },
+  { label: 'Отчет', icon: ReportIcon, path: '/report' },
+]
+
+function navigate(path) {
+  router.push(path)
 }
-
-
-const menuOptions = [
-  {
-    label: "Продажа",
-    key: "sales",
-    icon: renderIcon(BookIcon)
-  },
-  {
-    label: "Смена",
-    key: "shift",
-    icon: renderIcon(BookIcon),
-  },
-  {
-    label: "Отчет",
-    key: "report",
-    icon: renderIcon(BookIcon)
-  },
-  {
-    label: "Возврат",
-    key: "undo",
-    icon: renderIcon(BookIcon),
-  }
-];
-
-const count = 542;
-
-export default defineComponent({
-  components: {
-    Person,
-  },
-  setup() {
-    const router = useRouter();
-    const activeKey = ref("sales");
-
-    const handleMenuSelect = (key) => {
-      router.push({ name: key });
-    };
-    return {
-      activeKey,
-      menuOptions,
-      count,
-      handleMenuSelect,
-    };
-  }
-});
 </script>
 
 <template>
   <div class="main-header">
-    <div class="menu-list">
-      <div class="count">Счет № {{ count }}</div>
-      <div class="menu-items">
-        <n-menu
-          v-model:value="activeKey"
-          mode="horizontal"
-          :options="menuOptions"
-          responsive
-          @update:value="handleMenuSelect"
-          style="font-weight: 500;"
-        />
+    <div class="header-left">
+      <div class="header_score">
+        <strong>Счет №1</strong>
+      </div>
+      <div class="header_menu">
+        <div
+          v-for="item in menuItems"
+          :key="item.path"
+          :class="['menu-item', { active: route.path.startsWith(item.path) }]"
+          @click="navigate(item.path)"
+        >
+          <component :is="item.icon" width="25" height="25" />
+          <strong>{{ item.label }}</strong>
+        </div>
       </div>
     </div>
-    <div class="info-user">
-      <n-icon size="20" color="#0284c7">
-        <Person />
-      </n-icon>
-      <div style="color: gray">Sarvar Rozikulov</div>
-    </div>
+    <n-popover trigger="click">
+      <template #trigger>
+        <div class="header-right">
+          <div class="user-icon">
+            <user-icon width="25" height="25"></user-icon>
+          </div>
+          <span>Sarvar Rozikulov</span>
+        </div>
+      </template>
+      <div class="popover-content">
+        <div class="popover-item">
+          <logout-icon width="20" height="20"></logout-icon>
+          <span>Выйти из системы</span>
+        </div>
+        <div class="popover-item">
+          <moon-icon width="20" height="20"></moon-icon>
+          <span>Поменять тему</span>
+        </div>
+      </div>
+    </n-popover>
   </div>
 </template>
 
 <style scoped lang="scss">
 .main-header {
-  width: 100%;
-  background: #ffffff;
-  overflow: hidden;
   display: flex;
   justify-content: space-between;
-  padding: 10px 15px;
-  font-size: 20px;
-  font-weight: 500;
-  border-bottom: 1px solid #bae6fd;
+  width: 100%;
+  background: #f4f6fd;
+  color: #45556c;
+  padding: 0 15px;
+}
 
-  .menu-list {
+.header-left {
+  display: flex;
+  gap: 10px;
+}
+
+.header_score {
+  font-size: 24px;
+  width: 180px;
+  display: flex;
+  align-items: center;
+}
+
+.header_menu {
+  font-size: 18px;
+  display: flex;
+  gap: 15px;
+
+  .menu-item {
+    padding: 13px 10px;
     display: flex;
     align-items: center;
-    width: 100%;
-
-    .count {
-      padding: 4px 8px;
-      border-right: 1px solid #e3e2e2;
-      min-width: 200px;
-    }
-
-    .menu-items {
-      display: flex;
-      align-items: center;
-      width: 100%;
-    }
+    gap: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition:
+      background 0.3s,
+      color 0.3s;
   }
-  .info-user {
+
+  .menu-item.active {
+    background: #084661;
+    color: #ffffff;
+  }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+
+  .user-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 4px;
+    background: #084661;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+
+  span {
+    font-size: 18px;
+    font-weight: 500;
+  }
+}
+
+.popover-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 5px;
+
+  .popover-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    min-width: 150px;
+    gap: 10px;
+    cursor: pointer;
+
+    span {
+      font-weight: 500;
+      font-size: 16px;
+      color: #45556c;
+    }
   }
 }
 </style>
