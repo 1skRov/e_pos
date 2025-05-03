@@ -1,6 +1,53 @@
 @use 'base';
 
-#app {
-  margin: 0 auto;
-  font-weight: normal;
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.footer {
+  height: 260px;
+  max-height: 260px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.main-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 15px;
+}
+
+.add-btn {
+  border: 1px solid #2591a3;
+  width: 160px;
+  height: 75px;
+  color: #084661;
+  font-weight: 500;
+  border-radius: 4px;
+  font-size: 24px;
+  cursor: pointer;
+  background: #f4f8fb;
+
+  &:active {
+    background: #eaf3fa;
+  }
+}
+
+.plus-rounded, .minus-rounded {
+  border-radius: 100%;
+  width: 50px;
+  height: 50px;
+  background: #22a7bd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
 }

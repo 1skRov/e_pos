@@ -1,5 +1,5 @@
 <script>
-import {themeOverrides} from '@/assets/plugins/theme.js'
+import {themeOverrides} from '@/plugins/theme.js'
 
 export default {
   setup() {

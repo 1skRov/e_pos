@@ -1,5 +1,5 @@
 <script setup>
-import { useRouter, useRoute } from 'vue-router'
+import {useRouter, useRoute} from 'vue-router'
 
 import MainIcon from '@/assets/icons/MainIcon.vue'
 import ReportIcon from '@/assets/icons/ReportIcon.vue'
@@ -10,8 +10,8 @@ import MoonIcon from '@/assets/icons/MoonIcon.vue'
 const router = useRouter()
 const route = useRoute()
 const menuItems = [
-  { label: 'Главная', icon: MainIcon, path: '/sales' },
-  { label: 'Отчет', icon: ReportIcon, path: '/report' },
+  {label: 'Главная', icon: MainIcon, path: '/sales'},
+  {label: 'Отчет', icon: ReportIcon, path: '/report'},
 ]
 
 function navigate(path) {
@@ -32,7 +32,7 @@ function navigate(path) {
           :class="['menu-item', { active: route.path.startsWith(item.path) }]"
           @click="navigate(item.path)"
         >
-          <component :is="item.icon" width="25" height="25" />
+          <component :is="item.icon" width="25" height="25"/>
           <strong>{{ item.label }}</strong>
         </div>
       </div>
@@ -94,9 +94,8 @@ function navigate(path) {
     gap: 10px;
     border-radius: 4px;
     cursor: pointer;
-    transition:
-      background 0.3s,
-      color 0.3s;
+    transition: background 0.3s,
+    color 0.3s;
   }
 
   .menu-item.active {

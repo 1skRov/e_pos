@@ -63,7 +63,7 @@ const showPayment = ref(false)
   box-sizing: border-box;
   justify-content: space-between;
   padding: 15px;
-  background: #084661;
+  background: var(--footer-bg);
 }
 
 .footer-left {
