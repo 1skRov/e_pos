@@ -12,7 +12,7 @@ export default {
   <div class="app-container">
     <MainHeader class="header"></MainHeader>
     <div class="main-content">
-<!--      <router-view></router-view>-->
+      <router-view></router-view>
     </div>
     <main-footer class="footer"></main-footer>
   </div>

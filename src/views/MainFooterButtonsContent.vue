@@ -1,15 +1,23 @@
-<script setup>
+<script>
+export default {
+  props: {
+    isCollapsed: {
+      type: Boolean,
+      default: false,
+    }
+  }
+}
 
 </script>
 
 <template>
 <div class="buttons-content">
-  <div class="additional-buttons">
+  <div class="additional-buttons" v-if="!isCollapsed">
     <button>Отложка</button>
     <button>Доп.Функции</button>
     <button>Быстрые товары</button>
   </div>
-  <div class="payment-button">
+  <div class="payment-button" :class="{ isCollapsedPayment: isCollapsed }">
     <button>Оплата</button>
   </div>
 </div>
@@ -20,6 +28,7 @@
   display: flex;
   gap: 10px;
   height: 100%;
+  width: 100%;
 }
 .additional-buttons {
   display: flex;
@@ -58,6 +67,9 @@
     //box-shadow: 10px 5px 5px darkblue;
     &:active {
       background: var(--blue-400);
+    }
+    &.isCollapsedPayment {
+      height: 75px;
     }
   }
 }
