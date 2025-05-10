@@ -1,6 +1,6 @@
 <script>
-import { defineComponent, ref, watch } from 'vue'
-import { NInput, NIcon } from 'naive-ui'
+import { computed, defineComponent, ref, watch } from 'vue'
+import { NInput, NIcon, NButton } from 'naive-ui'
 import { BackspaceSharp } from '@vicons/ionicons5'
 
 export default defineComponent({
@@ -9,6 +9,7 @@ export default defineComponent({
     NInput,
     NIcon,
     BackspaceSharp,
+    NButton,
   },
   props: {
     modelValue: {
@@ -16,10 +17,11 @@ export default defineComponent({
       default: '',
     },
   },
-  emits: ['update:modelValue', 'cancel'],
+  emits: ['update:modelValue', 'cancel', 'keyboardInput'],
   setup(props, { emit }) {
     const currentValue = ref(props.modelValue)
     const originalValue = ref(props.modelValue)
+    const currentLayout = ref('ru')
 
     watch(
       () => props.modelValue,
@@ -31,14 +33,17 @@ export default defineComponent({
 
     const appendValue = (val) => {
       currentValue.value += val
+      emit('keyboardInput', currentValue.value)
     }
 
     const backspace = () => {
       currentValue.value = currentValue.value.slice(0, -1)
+      emit('keyboardInput', currentValue.value)
     }
 
     const clear = () => {
       currentValue.value = ''
+      emit('keyboardInput', currentValue.value)
     }
 
     const cancelChanges = () => {
@@ -51,11 +56,26 @@ export default defineComponent({
       emit('update:modelValue', currentValue.value)
     }
 
-    const keyboardRows = [
-      ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-      ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-      ['Z', 'X', 'C', 'V', 'B', 'N', 'M'],
-    ]
+    const layouts = ref({
+      ru: [
+        ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+        ['й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х'],
+        ['ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э'],
+        ['я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', '.'],
+      ],
+      en: [
+        ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+        ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+        ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+        ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.'],
+      ],
+    })
+
+    const toggleLayout = () => {
+      currentLayout.value = currentLayout.value === 'ru' ? 'en' : 'ru'
+    }
+
+    const currentKeyboardRows = computed(() => layouts.value[currentLayout.value])
 
     return {
       currentValue,
@@ -64,7 +84,9 @@ export default defineComponent({
       clear,
       cancelChanges,
       confirmChanges,
-      keyboardRows,
+      currentKeyboardRows,
+      toggleLayout,
+      currentLayout,
     }
   },
 })
@@ -72,32 +94,26 @@ export default defineComponent({
 
 <template>
   <div class="search-keyboard-panel">
-    <div class="input-back">
-      <n-input class="search-input" v-model:value="currentValue" readonly size="large" placeholder="Поиск..."/>
-      <button class="back-button" @click="backspace">
-        <n-icon size="30" color="#0284c7">
-          <BackspaceSharp />
-        </n-icon>
-      </button>
-    </div>
     <div class="keys-panel">
-      <div class="row" v-for="(row, index) in keyboardRows" :key="index">
-        <button
-          v-for="key in row"
-          :key="key"
-          class="key-button"
-          @click="appendValue(key)"
-        >
+      <div class="row" v-for="(row, index) in currentKeyboardRows" :key="index">
+        <button v-for="key in row" :key="key" class="key-button click-effect" @click="appendValue(key)">
           {{ key }}
         </button>
       </div>
       <div class="row">
         <button class="key-button space-button" @click="appendValue(' ')">Пробел</button>
+        <n-button class="lang-button" @click="toggleLayout"
+          >{{ currentLayout.toUpperCase() }}
+        </n-button>
       </div>
       <div class="action-row">
-        <button class="action-button clear-button" @click="clear">Очистить</button>
         <button class="action-button cancel-button" @click="cancelChanges">Отмена</button>
-        <button class="action-button ok-button" @click="confirmChanges">ОК</button>
+        <button class="action-button clear-button" @click="clear">Очистить</button>
+        <button class="back-button" @click="backspace">
+          <n-icon size="30" color="var(--blue-600)">
+            <BackspaceSharp />
+          </n-icon>
+        </button>
       </div>
     </div>
   </div>
@@ -105,35 +121,8 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .search-keyboard-panel {
-  display: flex;
-  flex-direction: column;
-  width: 690px;
-  gap: 12px;
-
-  .input-back {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    justify-content: center;
-
-    .search-input {
-      width: 100%;
-      font-size: 20px;
-    }
-
-    .back-button {
-      width: 80px;
-      height: 45px;
-      font-size: 20px;
-      border-radius: 8px;
-      background: #e0f2fe;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-  }
+  width: 750px;
+  padding: 5px;
 
   .keys-panel {
     display: flex;
@@ -147,29 +136,46 @@ export default defineComponent({
       flex-wrap: wrap;
 
       .key-button {
-        border: 1px solid #7dd3fc;
-        background: #e0f2fe;
-        border-radius: 8px;
+        border: 1px solid var(--blue-300);
+        background: var(--blue-100);
+        border-radius: 6px;
         font-size: 20px;
         width: 60px;
         height: 60px;
-        cursor: pointer;
 
         &:active {
-          background: #bae6fd;
+          background: var(--blue-200);
+          border: 1px solid var(--blue-400);
+          animation: press 0.2s 1 linear;
         }
       }
-      .space-button {
-        flex: 1;
-        text-align: center;
-        font-size: 18px;
+
+      &:first-child .key-button {
+        width: 45px;
       }
+    }
+
+    .row:last-child {
+      align-items: center;
+    }
+
+    .space-button {
+      flex: 1;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .lang-button {
+      width: 80px;
+      height: 60px;
+      font-size: 16px;
     }
 
     .action-row {
       display: flex;
       gap: 8px;
       justify-content: space-around;
+      margin-top: 8px;
 
       .action-button {
         flex: 1;
@@ -180,14 +186,33 @@ export default defineComponent({
         cursor: pointer;
       }
 
+      .back-button {
+        width: 80px;
+        height: 45px;
+        font-size: 20px;
+        border-radius: 8px;
+        background: var(--blue-200);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:active {
+          background: var(--blue-300);
+        }
+      }
+
       .clear-button {
         background: #e0f2fe;
         color: #0284c7;
       }
+
       .cancel-button {
         background: #d23050;
         color: #ffffff;
       }
+
       .ok-button {
         background: #0284c7;
         color: #ffffff;
@@ -195,4 +220,5 @@ export default defineComponent({
     }
   }
 }
+
 </style>

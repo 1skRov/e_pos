@@ -18,7 +18,7 @@
               <keyboard-icon stroke="#2563eb" width="30" height="30"></keyboard-icon>
             </n-button>
           </template>
-          <KeyBoard @keyboardInput="handleKeyboardInput"></KeyBoard>
+          <KeyBoard v-model="searchInputValue" @keyboardInput="handleKeyboardInput"></KeyBoard>
         </n-popover>
       </div>
       <div class="header-btns">
@@ -101,8 +101,8 @@ const activePopoverIndex = ref(null)
 const activePopoverField = ref(null)
 const productSelect = ref(null)
 const selectedItems = ref([])
+const searchInputValue = ref('')
 
-// Эмулируем данные о товарах с бэкенда
 const productsData = ref([
   { id: '12345', name: 'Пирожки', price: 500 },
   { id: '67890', name: 'Чай', price: 200 },
@@ -111,13 +111,11 @@ const productsData = ref([
 ])
 
 onMounted(() => {
-  // Инициализируем опции для селекта
   productOptions.value = productsData.value.map((product) => ({
     label: product.name,
     value: product.id,
   }))
 
-  // Добавляем обработчик события keydown для сканирования штрихкода
   window.addEventListener('keydown', handleBarcodeScan)
 })
 
@@ -127,18 +125,19 @@ const getProductById = (id) => {
 
 const addProductToTable = () => {
   if (selectedProductId.value) {
-    const existingItemIndex = salesItems.value.findIndex(item => item.productId === selectedProductId.value);
+    const existingItemIndex = salesItems.value.findIndex(
+      (item) => item.productId === selectedProductId.value,
+    )
     if (existingItemIndex !== -1) {
-      salesItems.value[existingItemIndex].quantity++;
+      salesItems.value[existingItemIndex].quantity++
     } else {
       salesItems.value.push({
         productId: selectedProductId.value,
         quantity: 1,
         discount: 0,
-      });
+      })
     }
-    selectedProductId.value = null;
-    // Больше не пытаемся вызывать productSelect.value.clear()
+    selectedProductId.value = null
   }
 }
 
@@ -169,15 +168,15 @@ const showKeyboardPopover = (show) => {
 }
 
 const handleKeyboardInput = (value) => {
-  // Эмулируем ввод штрихкода через клавиатуру в поле поиска
+  console.log('Ввод с клавиатуры:', value)
+  searchInputValue.value = value
+
   if (productSelect.value && productSelect.value.focus) {
     productSelect.value.focus()
-    productSelect.value.handleInputChange(value)
   }
 }
 
 const handleBarcodeScan = (event) => {
-  // Проверяем, является ли ввод похожим на штрихкод (например, длинная строка цифр)
   if (!showPopover.value && event.key && /^\d+$/.test(event.key) && event.key.length > 5) {
     const scannedProductId = event.key
     selectedProductId.value = scannedProductId
@@ -186,7 +185,6 @@ const handleBarcodeScan = (event) => {
 }
 
 const deleteSelectedItems = () => {
-  // Реализация удаления выбранных элементов (пока не реализовано выделение)
   console.log('Удалить выбранные элементы')
 }
 </script>
