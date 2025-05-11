@@ -1,6 +1,6 @@
 <script>
 import QuickItemsDrawer from '@/views/Sales/ProductForFastChoice.vue'
-import Payment from '@/views/Sales/Payment.vue'
+import Payment from '@/views/Sales/PaymentDrawer.vue'
 import AdditionalFunctions from '@/views/Sales/AdditionalFunctions.vue'
 
 export default {

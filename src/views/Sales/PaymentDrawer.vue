@@ -1,20 +1,20 @@
 <script setup>
-import {ref, watch, computed} from 'vue'
-import {NInput, NTabs, NTabPane} from 'naive-ui'
+import { ref, watch, computed } from 'vue'
+import { NInput, NTabs, NTabPane } from 'naive-ui'
 
 const paymentTypes = [
-  {key: 'cash', label: 'Наличными'},
-  {key: 'kaspi', label: 'Kaspi'},
-  {key: 'card', label: 'Карта'},
-  {key: 'debt', label: 'Долг'},
-  {key: 'bonus', label: 'Бонус'}
+  { key: 'cash', label: 'Наличными' },
+  { key: 'kaspi', label: 'Kaspi' },
+  { key: 'card', label: 'Карта' },
+  { key: 'debt', label: 'Долг' },
+  { key: 'bonus', label: 'Бонус' },
 ]
 
 const activeTab = ref('cash')
 const inputValue = ref('0')
-const paymentAmounts = ref({cash: 0, kaspi: 0, card: 55, debt: 2233, bonus: 0})
+const paymentAmounts = ref({ cash: 0, kaspi: 0, card: 55, debt: 2233, bonus: 0 })
 
-watch(activeTab, newTab => {
+watch(activeTab, (newTab) => {
   inputValue.value = String(paymentAmounts.value[newTab] || 0)
 })
 
@@ -30,16 +30,20 @@ function appendDigit(digit) {
 }
 
 const totalPaid = computed(() =>
-  paymentTypes.reduce((sum, t) => sum + (paymentAmounts.value[t.key] || 0), 0)
+  paymentTypes.reduce((sum, t) => sum + (paymentAmounts.value[t.key] || 0), 0),
 )
 </script>
 
 <template>
   <div class="payment-panel">
-    <div class="main-content" style="display: flex; gap: 20px;">
-      <div class="left-panel" style="display:flex;flex-direction:column;gap:20px">
-          <n-input v-model:value="inputValue" readonly size="large"
-                   style="font-size:40px;width:100%"/>
+    <div class="main-content" style="display: flex; gap: 20px">
+      <div class="left-panel" style="display: flex; flex-direction: column; gap: 20px">
+        <n-input
+          v-model:value="inputValue"
+          readonly
+          size="large"
+          style="font-size: 40px; width: 100%"
+        />
         <div class="numbers-panel">
           <div class="line">
             <button class="number-button" @click="appendDigit('7')">7</button>
@@ -63,35 +67,29 @@ const totalPaid = computed(() =>
           </div>
         </div>
       </div>
-      <div class="type-and-summary" style="display:flex;gap:20px">
-        <n-tabs v-model:value="activeTab" type="card" placement="left" size="large"
-                style="height:auto;width:auto">
-          <n-tab-pane
-            v-for="t in paymentTypes"
-            :key="t.key"
-            :name="t.key"
-            :tab="t.label"
-            :panel-style="{ height: '400px' }"
-          />
+      <div class="type-and-summary">
+        <n-tabs
+          v-model:value="activeTab"
+          type="card"
+          placement="left"
+          size="large"
+          style="width: auto"
+        >
+          <n-tab-pane v-for="t in paymentTypes" :key="t.key" :name="t.key" :tab="t.label" />
         </n-tabs>
-        <div class="summary-panel" style="display:flex;flex-direction:column;gap:8px">
-          <div
-            v-for="t in paymentTypes"
-            :key="t.key"
-            style="display:flex;justify-content:space-between;width: 100%"
-          >
-            <span>{{ t.label }}</span>
-            <span>{{ paymentAmounts[t.key].toFixed(2) }}</span>
+        <div class="summary-panel">
+          <div v-for="t in paymentTypes" :key="t.key" class="summary">
+            <span class="type">{{ t.label }}</span>
+            <span class="value">{{ paymentAmounts[t.key].toFixed(2) }}</span>
           </div>
-          <div
-            style="display:flex;justify-content:space-between;width: 100%;margin-top:12px;font-weight:bold">
+          <div class="change">
             <span>Сдача</span>
             <span>{{ (250000 - totalPaid).toFixed(2) }}</span>
           </div>
         </div>
       </div>
     </div>
-    <div style="display:flex;gap:8px">
+    <div style="display: flex; gap: 8px">
       <button class="action-refund action-button">Оформить возврат</button>
       <button class="action-cancel action-button">Отмена</button>
       <button class="action-pay action-button">Оплатить</button>
@@ -100,61 +98,85 @@ const totalPaid = computed(() =>
 </template>
 
 <style scoped lang="scss">
-.number-button {
-  flex: 1;
-  min-width: 70px;
-  max-width: 120px;
-  border: 1px solid #7dd3fc;
-  background: #e0f2fe;
-  border-radius: 8px;
-  font-size: 20px;
-  height: 70px;
-
-  &:active {
-    background: #bae6fd;
-  }
-}
-
 .payment-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-
   .main-content {
     display: flex;
     gap: 20px;
+    background: var(--blue-50);
   }
 
   .left-panel {
-    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    max-width: 50%;
+    max-width: 450px;
+    min-width: 260px;
+    width: 50%;
   }
 
   .numbers-panel {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
 
     .line {
       display: flex;
       width: 100%;
-      gap: 15px;
+      gap: 20px;
+
+      .number-button {
+        min-width: 70px;
+        max-width: 150px;
+        width: 100%;
+        border: 1px solid var(--blue-400);
+        background: var(--blue-200);
+        border-radius: 6px;
+        font-size: 24px;
+        height: 70px;
+
+        &:active {
+          background: var(--blue-100);
+          border: 1px solid var(--blue-300);
+          color: var(--blue-600);
+          animation: press 0.2s 1 linear;
+        }
+      }
     }
   }
 
   .type-and-summary {
     display: flex;
     gap: 20px;
+    width: 100%;
+    min-width: 320px;
+    max-width: 650px;
   }
 
   .summary-panel {
     display: flex;
     flex: 1;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
+
+    .summary {
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      color: var(--slate-700);
+
+      .value {
+        font-weight: 500;
+      }
+    }
+
+    .change {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 12px;
+      font-weight: 600;
+      font-size: 22px;
+    }
   }
 
   .action-button {
@@ -171,6 +193,7 @@ const totalPaid = computed(() =>
       background: #0ea5e9;
     }
   }
+
   .action-refund {
     background: #c70237;
     color: #fff;
