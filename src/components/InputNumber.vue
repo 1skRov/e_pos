@@ -48,6 +48,7 @@ export default defineComponent({
     const confirmChanges = () => {
       originalValue.value = currentValue.value
       emit('update:modelValue', Number(currentValue.value))
+      emit('close')
     }
 
     const decrement = () => {
