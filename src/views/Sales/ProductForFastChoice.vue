@@ -65,59 +65,56 @@ function handleCancel() {
 </script>
 
 <template>
-  <div
-    style="
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      height: 100%;
-      overflow: hidden;
-    "
-  >
-    <div style="border-right: 1px solid lightgray; width: 50%; height: 100%; overflow-y: auto">
-      <div
-        style="display: flex; gap: 10px; font-size: 18px; align-items: center; margin-bottom: 12px"
-      >
+  <div class="fast-choice">
+    <div class="left">
+      <div class="multiple-flag">
         <span>Выбрать несколько</span>
         <n-switch size="large" v-model:value="multiSelect" />
       </div>
 
-      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+      <div class="product-list">
         <div
           v-for="item in quickItems"
           :key="item.id"
           @click="toggleItem(item.id)"
+          class="product-item"
           :style="{
-            border: selected.has(item.id) ? '2px solid #5db7b9' : '2px solid lightgray',
-            cursor: 'pointer',
-            display: 'flex',
-            flexDirection: 'column',
-            width: '150px',
-            height: '150px',
-            borderRadius: '8px',
-            overflow: 'hidden',
-            transition: 'border 0.2s ease',
-            backgroundColor: selected.has(item.id) ? '#f4f8fb' : '#ffffff',
+            border: selected.has(item.id) ? '2px solid #3b82f6' : '2px solid lightgray',
+            backgroundColor: selected.has(item.id) ? 'var(--blue-100)' : '#ffffff',
           }"
         >
-          <div style="height: 60%; width: 100%">
-            <img :src="item.image" alt="" style="width: 100%; height: 100%; object-fit: fill" />
+          <div class="image">
+            <img :src="item.image" alt="some img" />
           </div>
-          <div style="font-size: 16px; padding: 8px">
-            <p style="font-weight: 500">{{ item.name }}</p>
-            <p style="color: #325b6f; font-weight: 600">{{ item.price }} ₸</p>
+          <div class="text">
+            <p class="name" :class="{ selected: selected.has(item.id) }">{{ item.name }}</p>
+            <p class="price" :class="{ selected: selected.has(item.id) }">{{ item.price }} ₸</p>
           </div>
         </div>
       </div>
     </div>
-    <div style="width: 50%; height: 100%; overflow-y: auto; padding: 0 12px">
+    <div class="right">
       <p v-if="selected.size === 0">Ничего не выбрано</p>
       <div v-else>
-        <div style="display: flex; justify-content: space-between; align-items: center">
-          <p style="font-size: 16px">Добавляемые продукты</p>
+        <div class="header-content">
+          <p>Добавляемые продукты</p>
           <div style="display: flex; gap: 8px">
-            <button class="addCancel add" @click="handleAdd">Добавить</button>
-            <button class="addCancel cancel" @click="handleCancel">Отменить</button>
+            <n-button
+              type="primary"
+              size="large"
+              style="font-weight: bold; font-size: 20px"
+              @click="handleAdd"
+            >
+              Добавить
+            </n-button>
+            <n-button
+              type="error"
+              size="large"
+              style="font-weight: bold; font-size: 20px"
+              @click="handleCancel"
+            >
+              Отменить
+            </n-button>
           </div>
         </div>
         <div
@@ -130,11 +127,18 @@ function handleCancel() {
             :key="item.id"
             style="align-items: center; gap: 12px"
           >
-            <button class="delete" @click="removeItem(item.id)" style="cursor: pointer">
+            <n-button
+              type="error"
+              @click="removeItem(item.id)"
+              size="large"
+              strong
+              secondary
+              circle
+            >
               <n-icon size="20">
                 <Trash />
               </n-icon>
-            </button>
+            </n-button>
             <div class="title" style="width: 100px; font-weight: 500">{{ item.name }}</div>
             <div class="count" style="display: flex; align-items: center; gap: 8px">
               <button @click="decreaseQty(item)" class="plus-rounded">
@@ -153,6 +157,102 @@ function handleCancel() {
 </template>
 
 <style scoped lang="scss">
+.fast-choice {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+  overflow: hidden;
+
+  .left {
+    border-right: 1px solid lightgray;
+    width: 50%;
+    height: 100%;
+    overflow-y: auto;
+
+    .multiple-flag {
+      display: flex;
+      gap: 10px;
+      font-size: 18px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .product-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      .product-item {
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 200px;
+        height: 200px;
+        border-radius: 6px;
+        overflow: hidden;
+        transition: border 0.2s ease;
+
+        .image {
+          height: 120px;
+          width: 100%;
+          padding: 5px;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            border-radius: 6px;
+          }
+        }
+
+        .text {
+          font-size: 16px;
+          padding: 5px 6px;
+
+          .name {
+            font-weight: 500;
+            color: var(--slate-600);
+
+            &.selected {
+              color: var(--blue-600);
+            }
+          }
+
+          .price {
+            font-weight: 600;
+            color: var(--slate-600);
+
+            &.selected {
+              color: var(--blue-600);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .right {
+    width: 50%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 0 12px;
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      p {
+        font-size: 18px;
+        color: var(--slate-600);
+        font-weight: 600;
+      }
+    }
+  }
+}
+
 .addCancel {
   width: 130px;
   height: 50px;

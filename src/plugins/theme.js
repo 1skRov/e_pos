@@ -1,29 +1,29 @@
 export const themeOverrides = {
   common: {
-    primaryColor: '#074D76',         // насыщенный синий (главный акцент)
-    primaryColorHover: '#063B5B',    // затемнённый при наведении
-    primaryColorPressed: '#052B42',  // ещё темнее при нажатии
-    primaryColorSuppl: '#074D76',
+    primaryColor: '#3B82F6',
+    primaryColorHover: '#2563EB',
+    primaryColorPressed: '#1D4ED8',
+    primaryColorSuppl: '#3B82F6',
 
-    bodyColor: '#E6F0F7',            // общий светлый фон
-    textColorBase: '#1A1A1A',         // основной текст
-    textColorSecondary: '#6B7A90',   // вторичный текст
-    borderColor: '#D9E6F2',          // границы карточек и списков
-    infoColor: '#074D76',            // цвет для инфо-сообщений
+    bodyColor: '#E6F0F7',
+    textColorBase: '#1A1A1A',
+    textColorSecondary: '#6B7A90',
+    borderColor: '#D9E6F2',
+    infoColor: '#074D76',
 
-    successColor: '#38B000',          // успех (зелёный)
-    warningColor: '#FFAA00',          // предупреждение (оранжевый)
-    errorColor: '#FF5630',            // ошибка (красный)
+    successColor: '#38B000',
+    warningColor: '#FFAA00',
+    errorColor: '#f51616',
 
-    scrollbarColor: '#D9E6F2',        // цвет скролла
-    scrollbarColorHover: '#074D76',   // цвет скролла при наведении
+    scrollbarColor: '#D9E6F2',
+    scrollbarColorHover: '#074D76',
 
-    tableHeaderColor: '#D9E6F2',      // фон заголовков таблиц
-    tableColor: '#FFFFFF',            // фон тела таблиц
-    tableBorderColor: '#D9E6F2',      // цвет бордеров таблиц
+    tableHeaderColor: '#D9E6F2',
+    tableColor: '#FFFFFF',
+    tableBorderColor: '#D9E6F2',
 
-    modalColor: '#FFFFFF',            // фон модальных окон
-    popoverColor: '#FFFFFF',          // фон всплывающих подсказок
-    cardColor: '#FFFFFF',             // фон карточек товаров
+    modalColor: '#FFFFFF',
+    popoverColor: '#FFFFFF',
+    cardColor: '#FFFFFF',
   }
 }
