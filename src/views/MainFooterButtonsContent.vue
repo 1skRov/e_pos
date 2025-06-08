@@ -5,6 +5,24 @@ export default {
       type: Boolean,
       default: false,
     }
+  },
+  data(){
+    return {
+      quickItem: false,
+      addFunc: false,
+      payment: false,
+    }
+  },
+  methods: {
+    showQuickItems(){
+      this.quickItem = true;
+    },
+    showAdditionalFunctions(){
+      this.addFunc = true;
+    },
+    showPayment(){
+      this.payment = true;
+    }
   }
 }
 
@@ -14,11 +32,11 @@ export default {
 <div class="buttons-content">
   <div class="additional-buttons" v-if="!isCollapsed">
     <button>Отложка</button>
-    <button>Доп.Функции</button>
-    <button>Быстрые товары</button>
+    <button @click="showAdditionalFunctions">Доп.Функции</button>
+    <button @click="showQuickItems">Быстрые товары</button>
   </div>
   <div class="payment-button" :class="{ isCollapsedPayment: isCollapsed }">
-    <button>Оплата</button>
+    <button @click="showPayment">Оплата</button>
   </div>
 </div>
 </template>
